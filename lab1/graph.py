@@ -24,6 +24,11 @@ class Graph(object):
         else:
             self.__graph_dict[vertex1] = [vertex2]
 
+        if vertex2 in self.__graph_dict:
+            self.__graph_dict[vertex2].append(vertex1)
+        else:
+            self.__graph_dict[vertex2] = [vertex1]
+
     def __generate_edges(self):
         edges = []
         for vertex in self.__graph_dict:
@@ -62,57 +67,61 @@ class Graph(object):
             return True
         return False
 
-
     def connected_components(self):
-    
+
         # List of connected components found. The order is random.
         result = []
 
-        
-    
         # Make a copy of the set, so we can modify it.
         nodes = self.vertices()
         nodes = set(nodes)
-    
+
         # Iterate while we still have nodes to process.
         while nodes:
-    
+
             # Get a random node and remove it from the global set.
             n = nodes.pop()
-    
+
             # This set will contain the next group of nodes connected to each other.
             group = {n}
-    
+
             # Build a queue with this node in it.
             queue = [n]
-    
+
             # Iterate the queue.
             # When it's empty, we finished visiting a group of connected nodes.
             while queue:
-    
+
                 # Consume the next item from the queue.
                 n = queue.pop(0)
-    
+
                 # Fetch the neighbors.
                 neighbors = set(self.__graph_dict[n])
-    
+
                 # Remove the neighbors we already visited.
                 neighbors.difference_update(group)
-    
+
                 # Remove the remaining nodes from the global set.
                 nodes.difference_update(neighbors)
-    
+
                 # Add them to the group of connected nodes.
                 group.update(neighbors)
-    
+
                 # Add them to the queue, so we visit them in the next iterations.
                 queue.extend(neighbors)
-    
+
             # Add the group to the list of groups.
             result.append(group)
-    
+
         # Return the list of groups.
         return result
+
+    def get_cyclomatic_number(self):
+        n_vertices = len(self.vertices())
+        n_edges = len(self.edges())
+        n_components = len(self.connected_components())
+        c_number = n_edges - n_vertices + n_components
+        return c_number
 
 
 if __name__ == '__main__':
@@ -155,9 +164,4 @@ if __name__ == '__main__':
     print(graph.edges())
 
     print('----------------------------------')
-    number = 0
-    for components in graph.connected_components():
-        names = sorted(node.name for node in components)
-        names = ", ".join(names)
-        print ("Group {}: {}".format(number, names))
-        number += 1
+ 

@@ -17,7 +17,6 @@ def visualize_graph(graph: Graph):
     nx.draw_networkx_nodes(G, pos, edge_labels=True, node_size=2000)
     nx.draw_networkx_edges(G, pos, alpha=0.5, width=6)
     labels = nx.draw_networkx_labels(G, pos)
-    
     plt.show()
 
 
